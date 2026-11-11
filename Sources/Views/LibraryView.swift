@@ -3,6 +3,7 @@ import SwiftData
 
 struct LibraryView: View {
     @Query(sort: \StudySet.updatedAt, order: .reverse) private var studySets: [StudySet]
+    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var subscriptions: SubscriptionManager
     @State private var showingImport = false
     @State private var showingPaywall = false
@@ -59,6 +60,9 @@ struct LibraryView: View {
     }
 
     private func deleteSets(at offsets: IndexSet) {
-        for index in offsets { /* handled by List's model context below */ }
+        for index in offsets {
+            modelContext.delete(studySets[index])
+        }
+        try? modelContext.save()
     }
 }
